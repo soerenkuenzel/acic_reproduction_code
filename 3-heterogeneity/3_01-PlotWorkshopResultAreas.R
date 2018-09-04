@@ -32,7 +32,8 @@ cbind(X1 = ds$X1, estimates) %>%
   theme_minimal() +
   xlab("School-level mean of students' fixed mindsets")  +
   geom_vline(xintercept = c(0.1), linetype = 2) +
-  coord_cartesian(ylim = c(0, .33)) 
+  coord_cartesian(ylim = c(0, .33)) +
+  theme(legend.position = "none")
 
 ggsave("../../ACIC-paper/figure/Figure2-FixedMindesetCATE.pdf", 
        width = 8,
@@ -40,33 +41,6 @@ ggsave("../../ACIC-paper/figure/Figure2-FixedMindesetCATE.pdf",
        
 # Plot SChool level achievement ------------------------------------------------
 # cbind(X2 = seq(min(ds2$X2), max(ds2$X2), length.out = 100), estimates_ds) %>%
-stop("That does not work yet!")
-cbind(X2 = ds$X2, estimates) %>% 
-  reshape::melt(id = c("X2")) %>% 
-  dplyr::rename(
-    Estimator = variable,
-    CATE = value,
-    School_achievement_level = X2
-  ) %>%
-  mutate(Estimator = factor(
-    paste("Estimator", as.numeric(Estimator)),
-    levels = paste("Estimator", 1:length(unique(Estimator)))
-  )) %>% 
-  ggplot(aes(x = School_achievement_level, y = CATE, color = Estimator)) +
-  geom_smooth(se = FALSE) +
-  theme_minimal() +
-  xlab("School achievement level") +
-  coord_cartesian(ylim = c(.1,.3)) +
-  geom_vline(xintercept = c(-.3, 1.1), linetype = 2) + 
-  geom_text(x = -2, y = .11, label = 'low', color = 'black') +
-  geom_text(x = .4, y = .11, label = 'medium', color = 'black') +
-  geom_text(x = 1.6, y = .11, label = 'high', color = 'black')
-
-ggsave("../../ACIC-paper/figure/Figure3-SchoolLevelAchievment.pdf", 
-       width = 8,
-       height = 5)
-
-
 cbind(X2 = ds$X2, estimates) %>% 
   reshape::melt(id = c("X2")) %>% 
   dplyr::rename(Estimator = variable, CATE = value, School_achievement_level = X2) %>%
@@ -84,7 +58,8 @@ cbind(X2 = ds$X2, estimates) %>%
   geom_vline(xintercept = c(-.3, 1.1), linetype = 2) + 
   geom_text(x = -2, y = .11, label = 'low', color = 'black') +
   geom_text(x = .4, y = .11, label = 'medium', color = 'black') +
-  geom_text(x = 1.6, y = .11, label = 'high', color = 'black')
+  geom_text(x = 1.6, y = .11, label = 'high', color = 'black') +
+  theme(legend.position = "none")
 
 ggsave("../../ACIC-paper/figure/Figure3-SchoolLevelAchievment.pdf", 
        width = 8,
