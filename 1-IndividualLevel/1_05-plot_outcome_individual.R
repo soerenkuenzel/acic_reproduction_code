@@ -13,6 +13,11 @@ estimates <- do.call(cbind, estimate_list)
 
 unsure_units <- sort(c(3942, 671, 2857, 10107, 1746, 7313, 2319, 10251, 692, 4932))
 
+
+
+
+
+
 prepared_data <- data.frame(id = 1:nrow(estimates),
            estimates)  %>% 
   melt(id = "id") %>%
@@ -26,6 +31,17 @@ prepared_data <- data.frame(id = 1:nrow(estimates),
          ) %>%
   tbl_df()
 
+
+# Figure -- raw
+prepared_data %>%
+  ggplot(aes(x = id, y = value)) +
+  geom_point() +
+  ylab("CATE estimate") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+ggsave("../../ACIC-paper/figure/Estimator_disagreement_individual_raw.pdf", 
+       width = 8, 
+       height = 5)
 
 prepared_data %>%
   ggplot(aes(x = id, y = value, color = noschoolid, shape = substr(learnermain,1,1))) +
