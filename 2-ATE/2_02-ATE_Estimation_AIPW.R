@@ -1,4 +1,4 @@
-setwd("/Users/soeren/Dropbox/ACIC_workshop_paper/Code/analysis/")
+setwd("~/Dropbox/ACIC_workshop_paper/Code/analysis/")
 library(tidyverse)
 library(reshape)
 library(Matching)
@@ -33,9 +33,9 @@ es <- estimate.ATE(
                     W, 
                     Y),
   divby0.action = "t",
-  divby0.tol = 0.001,
+  divby0.tol = 0.01,
   var.gam.plot = FALSE,
-  nboot = 50
+  nboot = 500
 )
 
 list(
@@ -109,5 +109,9 @@ AIPW <- function(these_samples) {
       sum(these_samples)
   )
 }
+
+
+
+# Random forest estimate of ATE:
 
 

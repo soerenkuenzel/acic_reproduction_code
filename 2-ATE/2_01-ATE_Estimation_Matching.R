@@ -1,4 +1,4 @@
-setwd("/Users/soeren/Dropbox/ACIC_workshop_paper/Code/analysis/")
+setwd("~/Dropbox/ACIC_workshop_paper/Code/analysis/")
 library(tidyverse)
 library(reshape)
 library(Matching)
@@ -13,9 +13,9 @@ W <- ds$Z
 # Matching exactly on School ---------------------------------------------------
 mm <- Match(Y = ds$Y, 
             Tr = ds$Z, 
-            X = ds[ ,c(1,4:13)], 
+            X = ds[ ,c(1,4:7)], 
             exact = c(TRUE, rep(FALSE, 10)), 
-            estimand = "ATE")
+            estimand = "ATE", Weight = 2, replace = TRUE)
 
 stopifnot(ds$schoolid[mm$index.control] == ds$schoolid[mm$index.treated])
 fake_ite <- ds$Y[mm$index.treated] - ds$Y[mm$index.control]
@@ -24,4 +24,26 @@ fake_ite <- ds$Y[mm$index.treated] - ds$Y[mm$index.control]
 
 mm$est
 mm$se
+
+c(
+  lowerCI = mm$est - 1.96 * mm$se, 
+  est = mm$est,
+  upperCI = mm$est + 1.96 * mm$se
+)
+
+
+# Assessing sensitivity of matching estimators. 
+
+library(sensitivitymv)
+
+matched_dd <- data.frame(trt = ds$Y[mm$index.treated], ctrl = ds$Y[mm$index.control])
+
+matched_pairs <- cbind(matched_dd$trt,  matched_dd$ctrl)
+
+uniroot(function(gamma) 
+  sensitivitymv::senmv(matched_pairs, gamma = gamma, trim = 2.5, method = "t")$pval - 0.05,
+  lower = 1, upper = 50
+)
+
+amplify()
 
