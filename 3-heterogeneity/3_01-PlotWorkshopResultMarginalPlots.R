@@ -1,3 +1,6 @@
+setwd("/Users/soeren/Dropbox/ACIC_workshop_paper/Code/analysis/")
+library(tidyverse)
+library(reshape)
 #  Read in the data ------------------------------------------------------------
 files <- dir("1-IndividualLevel/estimates/")
 estimate_list <- list()
@@ -19,7 +22,7 @@ ds <- read.csv("data/synthetic_data.csv") %>% tbl_df() %>%
 
 # Plot the Fixed Mindset Base Line ---------------------------------------------
 
-cbind(X1 = ds$X1, estimates) %>%
+p1_marginal <- cbind(X1 = ds$X1, estimates) %>%
   melt(id = "X1") %>%
   dplyr::rename(Estimator = variable, CATE = value) %>%
   mutate(Estimator =
@@ -35,10 +38,11 @@ cbind(X1 = ds$X1, estimates) %>%
   coord_cartesian(ylim = c(0, .33)) +
   theme(legend.position = "none")
 
-ggsave("../../ACIC-paper/figure/Figure2-FixedMindesetCATE.pdf", 
+ggsave(plot = p1_marginal, 
+       filename = "../../ACIC-paper/figure/Figure2-FixedMindesetCATE.pdf", 
        width = 8,
        height = 5)
-       
+
 # Plot SChool level achievement ------------------------------------------------
 # cbind(X2 = seq(min(ds2$X2), max(ds2$X2), length.out = 100), estimates_ds) %>%
 cbind(X2 = ds$X2, estimates) %>% 

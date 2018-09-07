@@ -47,9 +47,11 @@ W <- ds$Z
 source("1-IndividualLevel/1_01-define_estimatorsCT.R")
   
 dir.create("1-IndividualLevel/estimates", showWarnings = FALSE)
+dir.create("1-IndividualLevel/PDPestimates", showWarnings = FALSE)
 for (slb in c(FALSE, TRUE)) {
   for (estimator_i in 1:length(estimator_grid)) {
     # estimator_i = 16; slb = TRUE
+    print(paste("# Estimator = ", estimator_i))
     if (slb) {
       feat_to_use <- feat_schoolLevel
       feat_var_name <- "_SchoolIdNoSchoolVars"
@@ -63,6 +65,7 @@ for (slb in c(FALSE, TRUE)) {
     estimator_name <- names(estimator_grid)[estimator_i]
     CATEpredictor <- CATEpredictor_grid[[estimator_name]]
     
+    # Insample Predictions -----------------------------------------------------
     estimates_i <-
       tryCatch({
         L <- estimator(feat = feat_to_use,
@@ -93,6 +96,66 @@ for (slb in c(FALSE, TRUE)) {
       )
     )
     
+    # PDP predictions ----------------------------------------------------------
+    # This is needed to create the PDP plots we are using later.
+    for (ft in colnames(feat_to_use)) {
+      # ft = colnames(feat_to_use)[1]
+      print(paste("Running", ft))
+      ## Generate a data set which contains all units with all possible feature
+      ## settings for ft.
+      if (is.integer(feat_to_use[[ft]]) | is.factor(feat_to_use[[ft]])) {
+        #
+        grid <- sort(unique(feat_to_use[[ft]]))
+        
+      } else {
+        # for a numeric go through all the points from min to max in 100 steps
+        grid <- seq.int(from = min(feat_to_use[[ft]]), 
+                        to = max(feat_to_use[[ft]]), 
+                        length.out = 50)
+      }
+      
+      pdp_feat_list <- list()
+      for (val in grid) {
+        # val = grid[2]
+        pdp_feat_list[[as.character(val)]] <- feat_to_use
+        pdp_feat_list[[as.character(val)]][,ft] <- val
+      }
+      pdp_feat <- do.call(rbind, pdp_feat_list)
+      if (is.character(pdp_feat[[ft]])) {
+        pdp_feat[[ft]] <- factor(pdp_feat[[ft]])
+      }
+      PDPestimates_i <-
+        tryCatch({
+          CATEpredictor(L, pdp_feat)
+        },
+        error = function(e) {
+          print(e)
+          warning(paste("Something went wrong with", estimator_name))
+          return(NA)
+        })
+      PDPestimates_i_summary <- cbind(pdp_feat[, ft], PDPestimates_i) %>% 
+        group_by_(ft) %>% 
+        summarise(estimate = mean(PDPestimates_i), 
+                  sd = sd(PDPestimates_i))
+      PDPestimates_i_summary <- as.data.frame(PDPestimates_i_summary)
+      
+      rownames(PDPestimates_i_summary) <- 1:nrow(PDPestimates_i_summary)
+      head(PDPestimates_i_summary)
+      
+      
+      write.csv(
+        PDPestimates_i_summary,
+        file = paste0(
+          "1-IndividualLevel/PDPestimates/",
+          ft,
+          "_",
+          estimator_name,
+          feat_var_name,
+          ".csv"
+        )
+      )
+      
+    }
     print(paste("      Done with ",
                 estimator_name, slb))
   }

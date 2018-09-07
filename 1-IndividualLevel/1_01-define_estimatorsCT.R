@@ -28,7 +28,7 @@ make_one_hot <- function(feat_tmn) {
 }
 
 # ------------------------------------------------------------------------------
-
+# Define estimators:
 estimator_grid <- list(
   "S_RF" = function(feat, W, Yobs)
     S_RF(feat, W, Yobs),
@@ -220,3 +220,7 @@ CATEpredictor_grid <- list(
     return(predict(estimator, feat_te)$predictions)
   }
 )
+
+# ------------------------------------------------------------------------------
+# 
+
