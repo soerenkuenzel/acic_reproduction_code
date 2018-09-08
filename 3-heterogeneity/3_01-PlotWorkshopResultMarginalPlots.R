@@ -34,7 +34,7 @@ p1_marginal <- cbind(X1 = ds$X1, estimates) %>%
   geom_smooth(aes(x = X1, y = CATE, color = Estimator), se = FALSE) +
   theme_minimal() +
   xlab("School-level mean of students' fixed mindsets")  +
-  geom_vline(xintercept = c(0.1), linetype = 2) +
+  geom_vline(xintercept = c(0.15), linetype = 2) +
   coord_cartesian(ylim = c(0, .33)) +
   theme(legend.position = "none")
 
