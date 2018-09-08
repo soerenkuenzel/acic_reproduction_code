@@ -13,8 +13,7 @@ for (estim_file in files) {
   estimate_list[[estim_file]] <- vec_toadd[, 3, drop = FALSE]
 }
 estimates <- do.call(cbind, estimate_list)
-
-cbind(vec_toadd[ ,2, drop = FALSE], estimates) %>% 
+p1_pdp_pd <- cbind(vec_toadd[ ,2, drop = FALSE], estimates) %>% 
   melt(id = "X1") %>%
   dplyr::rename(Estimator = variable, CATE = value) %>%
   mutate(Estimator =
@@ -22,6 +21,9 @@ cbind(vec_toadd[ ,2, drop = FALSE], estimates) %>%
              paste("Estimator", as.numeric(Estimator)),
              levels = paste("Estimator", 1:length(unique(Estimator)))
            )) %>%
+  tbl_df()
+(
+  p1_pdp <- p1_pdp_pd %>%
   ggplot() +
   geom_smooth(aes(x = X1, y = CATE, color = Estimator), se = FALSE) +
   theme_minimal() +
@@ -30,6 +32,7 @@ cbind(vec_toadd[ ,2, drop = FALSE], estimates) %>%
   # coord_cartesian(ylim = c(0, .33)) +
   theme(legend.position = "none") + 
   ggtitle("Partial Dependence Plot")
+)
 
 ggsave(filename = "../../ACIC-paper/figure/Figure2b-FixedMindesetCATE_PDP.pdf", 
        width = 8,
@@ -49,7 +52,7 @@ for (estim_file in files) {
 }
 estimates <- do.call(cbind, estimate_list)
 
-cbind(vec_toadd[ ,2, drop = FALSE], estimates) %>% 
+p2_pdp_pd <- cbind(vec_toadd[ ,2, drop = FALSE], estimates) %>% 
   melt(id = "X2") %>%
   dplyr::rename(Estimator = variable, CATE = value) %>%
   mutate(Estimator =
@@ -57,10 +60,13 @@ cbind(vec_toadd[ ,2, drop = FALSE], estimates) %>%
              paste("Estimator", as.numeric(Estimator)),
              levels = paste("Estimator", 1:length(unique(Estimator)))
            )) %>%
+  tbl_df()
+(
+  p2_pdp <- p2_pdp_pd %>%
   ggplot() +
   geom_smooth(aes(x = X2, y = CATE, color = Estimator), se = FALSE) +
   theme_minimal() +
-  xlab("School-level mean of students' fixed mindsets")  +
+  xlab("School achievement level") +
   geom_vline(xintercept = c(-.3, 1.1), linetype = 2) + 
   geom_text(x = -2, y = .11, label = 'low', color = 'black') +
   geom_text(x = .4, y = .11, label = 'medium', color = 'black') +
@@ -68,7 +74,7 @@ cbind(vec_toadd[ ,2, drop = FALSE], estimates) %>%
   # coord_cartesian(ylim = c(0, .33)) +
   theme(legend.position = "none") + 
   ggtitle("Partial Dependence Plot")
-
+)
 
 ggsave("../../ACIC-paper/figure/Figure3b-SchoolLevelAchievment_PDP.pdf", 
        width = 8,

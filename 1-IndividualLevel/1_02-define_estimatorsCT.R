@@ -89,13 +89,6 @@ estimator_grid <- list(
       sample_fraction_second = 1,
       sample_fraction_prop = 1
     ), 
-  
-  "S_BART" = function(feat, W, Yobs)
-    S_BART(feat, W, Yobs, verbose = TRUE),
-  "T_BART" = function(feat, W, Yobs)
-    T_BART(feat, W, Yobs, verbose = TRUE),
-  "X_BART" = function(feat, W, Yobs)
-    X_BART(feat, W, Yobs),
   "CF" = function(feat, W, Yobs) {
     # feat <- feat %>%  mutate(
     #   C1 = as.numeric(C1),
@@ -152,7 +145,13 @@ estimator_grid <- list(
       min.node.size = 10,
       honesty = TRUE
     )
-  }
+  }, 
+  "S_BART" = function(feat, W, Yobs)
+    S_BART(feat, W, Yobs, verbose = TRUE),
+  "T_BART" = function(feat, W, Yobs)
+    T_BART(feat, W, Yobs, verbose = TRUE),
+  "X_BART" = function(feat, W, Yobs)
+    X_BART(feat, W, Yobs)
 )
 CATEpredictor_grid <- list(
   "S_RF" = function(estimator, feat_te)

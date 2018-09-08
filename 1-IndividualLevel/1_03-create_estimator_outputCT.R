@@ -1,9 +1,14 @@
 setwd("/Users/soeren/Dropbox/ACIC_workshop_paper/Code/analysis/")
+source("1-IndividualLevel/1_02-define_estimatorsCT.R")
 library(tidyverse)
 library(reshape)
 nthread <- 8
 
-ds <- read.csv("data/synthetic_data.csv") %>% tbl_df() %>%
+ev_sepbl <- read.csv("1-IndividualLevel/exploration_validation_splitting.csv")
+
+ds <- read.csv("data/synthetic_data.csv") %>% 
+  tbl_df() %>%
+  filter(ev_sepbl$exploration) %>% # only take the exploration set here
   mutate(
     schoolid = factor(schoolid),
     C1 = factor(C1),
@@ -43,14 +48,12 @@ feat <- ds[, c("S3", "C1", "C2", "C3", "XC", "X1", "X2", "X3", "X4", "X5")]
 feat_schoolLevel <- ds[, c("S3", "C1", "C2", "C3", "schoolid")]
 Y <- ds$Y
 W <- ds$Z
-
-source("1-IndividualLevel/1_01-define_estimatorsCT.R")
   
 dir.create("1-IndividualLevel/estimates", showWarnings = FALSE)
 dir.create("1-IndividualLevel/PDPestimates", showWarnings = FALSE)
-for (slb in c(FALSE, TRUE)) {
-  for (estimator_i in 1:length(estimator_grid)) {
-    # estimator_i = 16; slb = TRUE
+for (estimator_i in 1:length(estimator_grid)) {
+  for (slb in c(FALSE, TRUE)) {
+    # estimator_i = 13; slb = FALSE
     print(paste("# Estimator = ", estimator_i))
     if (slb) {
       feat_to_use <- feat_schoolLevel
@@ -130,7 +133,8 @@ for (slb in c(FALSE, TRUE)) {
         },
         error = function(e) {
           print(e)
-          warning(paste("Something went wrong with", estimator_name))
+          warning(paste("Something went wrong with", estimator_name, 
+                        "when doing the PDP stuff"))
           return(NA)
         })
       PDPestimates_i_summary <- cbind(pdp_feat[, ft], PDPestimates_i) %>% 

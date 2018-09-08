@@ -1,4 +1,4 @@
-set.seed(734314636)
+set.seed(734324633)
 ds <- read.csv("data/synthetic_data.csv") 
 
 eset_bl <- sample(c(TRUE, FALSE), size = nrow(ds), replace = TRUE)
