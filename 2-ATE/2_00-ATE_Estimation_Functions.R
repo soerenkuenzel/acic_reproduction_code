@@ -86,7 +86,7 @@ matching_sensitivity <- function(Y,Z,feat) {
               X = match_X, 
               exact = c(TRUE, rep(FALSE, 4)), 
               estimand = "ATE", Weight = 2, replace = TRUE)
-  stopifnot(X$schoolid[mm$index.control] == X$schoolid[mm$index.treated])
+  stopifnot(match_X$schoolid[mm$index.control] == match_X$schoolid[mm$index.treated])
   matched_pairs <- cbind(Y[mm$index.treated], Y[mm$index.control])
 
   out <- uniroot(function(gamma) 
