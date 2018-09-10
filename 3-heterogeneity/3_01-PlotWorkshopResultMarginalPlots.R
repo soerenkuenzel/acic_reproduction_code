@@ -63,11 +63,10 @@ p2_marginal_pd <- cbind(X2 = ds$X2, estimates) %>%
   mutate(Estimator = factor(paste("Estimator", as.numeric(Estimator)), 
                             levels = paste("Estimator", 
                                            1:length(unique(Estimator))))) %>%
-  group_by(X2, Estimator) %>%
-  summarize(CATE = mean(CATE)) %>% 
   tbl_df()
 (
-  p2_marginal <- p2_marginal_pd %>%
+  p2_marginal <- p2_marginal_pd %>%  group_by(X2, Estimator) %>%
+    summarize(CATE = mean(CATE)) %>%
   ggplot(aes(x = X2, y = CATE, color = Estimator)) +
     geom_smooth(se = FALSE) +
     # geom_point() +
