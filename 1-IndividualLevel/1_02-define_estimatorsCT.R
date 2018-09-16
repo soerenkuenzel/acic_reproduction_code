@@ -38,7 +38,7 @@ estimator_grid <- list(
     S_RF(feat, W, Yobs, mtry = 5, alwaysTr = FALSE),
   "S_RF4" = function(feat, W, Yobs)
     S_RF(feat, W, Yobs, mtry = 3, alwaysTr = FALSE, splitratio = 1),
-  
+
   "T_RF" = function(feat, W, Yobs)
     T_RF(feat, W, Yobs),
   "T_RF2" = function(feat, W, Yobs)
@@ -47,8 +47,8 @@ estimator_grid <- list(
     T_RF(feat, W, Yobs, mtry = 1, splitratio = 0.5),
   "T_RF4" = function(feat, W, Yobs)
     T_RF(feat, W, Yobs, splitratio = 1),
-  
-  
+
+
   "X_RF" = function(feat, W, Yobs)
     X_RF(feat, W, Yobs, verbose = FALSE),
   "X_RF2" = function(feat, W, Yobs)
@@ -88,13 +88,13 @@ estimator_grid <- list(
       sample_fraction_first = 1,
       sample_fraction_second = 1,
       sample_fraction_prop = 1
-    ), 
+    ),
   "CF" = function(feat, W, Yobs) {
     # feat <- feat %>%  mutate(
     #   C1 = as.numeric(C1),
     #   C2 = as.numeric(C2),
     #   C3 = as.numeric(C3)
-    # ) 
+    # )
     feat <- make_one_hot(feat)
     feat <- as.matrix(feat)
     colnames(feat) <- NULL
@@ -111,7 +111,7 @@ estimator_grid <- list(
     #   C1 = as.numeric(C1),
     #   C2 = as.numeric(C2),
     #   C3 = as.numeric(C3)
-    # ) 
+    # )
     feat <- make_one_hot(feat)
     feat <- as.matrix(feat)
     colnames(feat) <- NULL
@@ -120,7 +120,7 @@ estimator_grid <- list(
       Y = Yobs,
       W = W,
       num.trees = 500,
-      num.threads = nthread, 
+      num.threads = nthread,
       mtry = 1,
       min.node.size = 1,
       honesty = FALSE
@@ -131,7 +131,7 @@ estimator_grid <- list(
     #   C1 = as.numeric(C1),
     #   C2 = as.numeric(C2),
     #   C3 = as.numeric(C3)
-    # ) 
+    # )
     feat <- make_one_hot(feat)
     feat <- as.matrix(feat)
     colnames(feat) <- NULL
@@ -140,18 +140,26 @@ estimator_grid <- list(
       Y = Yobs,
       W = W,
       num.trees = 500,
-      num.threads = nthread, 
+      num.threads = nthread,
       mtry = 10,
       min.node.size = 10,
       honesty = TRUE
     )
-  }, 
+  },
   "S_BART" = function(feat, W, Yobs)
     S_BART(feat, W, Yobs, verbose = TRUE),
   "T_BART" = function(feat, W, Yobs)
     T_BART(feat, W, Yobs, verbose = TRUE),
   "X_BART" = function(feat, W, Yobs)
-    X_BART(feat, W, Yobs)
+    X_BART(feat, W, Yobs),
+  "R_BOOST" = function(feat, W, Yobs) {
+    feat <- make_one_hot(feat)
+    feat <- as.matrix(feat)
+    colnames(feat) <- NULL
+    W <- as.logical(W)
+    rlearner::rboost(feat, W, Yobs,
+                     nthread = nthread)
+    }
 )
 CATEpredictor_grid <- list(
   "S_RF" = function(estimator, feat_te)
@@ -189,7 +197,7 @@ CATEpredictor_grid <- list(
     #   C1 = as.numeric(C1),
     #   C2 = as.numeric(C2),
     #   C3 = as.numeric(C3)
-    # ) 
+    # )
     feat_te <- make_one_hot(feat_te)
     feat_te <- as.matrix(feat_te)
     colnames(feat_te) <- NULL
@@ -200,7 +208,7 @@ CATEpredictor_grid <- list(
     #   C1 = as.numeric(C1),
     #   C2 = as.numeric(C2),
     #   C3 = as.numeric(C3)
-    # ) 
+    # )
     feat_te <- make_one_hot(feat_te)
     feat_te <- as.matrix(feat_te)
     colnames(feat_te) <- NULL
@@ -211,12 +219,19 @@ CATEpredictor_grid <- list(
     #   C1 = as.numeric(C1),
     #   C2 = as.numeric(C2),
     #   C3 = as.numeric(C3)
-    # ) 
+    # )
     feat_te <- make_one_hot(feat_te)
-    
+
     feat_te <- as.matrix(feat_te)
     colnames(feat_te) <- NULL
     return(predict(estimator, feat_te)$predictions)
+  },
+  "R_BOOST" = function(estimator, feat_te) {
+    feat_te <- make_one_hot(feat_te)
+
+    feat_te <- as.matrix(feat_te)
+    colnames(feat_te) <- NULL
+    return(rlearner:::predict.rboost(estimator, feat_te))
   }
 )
 
