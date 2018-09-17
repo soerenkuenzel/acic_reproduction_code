@@ -1,8 +1,8 @@
-setwd("/Users/soeren/Dropbox/ACIC_workshop_paper/Code/analysis/")
+setwd("~/Dropbox/ACIC_workshop_paper/Code/analysis/")
 source("1-IndividualLevel/1_02-define_estimatorsCT.R")
 library(tidyverse)
 library(reshape)
-nthread <- 8
+nthread <- 4
 
 ev_sepbl <- read.csv("1-IndividualLevel/exploration_validation_splitting.csv")
 
