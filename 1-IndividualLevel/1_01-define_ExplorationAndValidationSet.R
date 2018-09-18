@@ -1,3 +1,4 @@
+setwd("~/acic_reproduction_code/")
 set.seed(734324633)
 ds <- read.csv("data/synthetic_data.csv") 
 
