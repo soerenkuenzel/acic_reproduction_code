@@ -65,7 +65,8 @@ p2_marginal_pd <- cbind(X2 = ds$X2, estimates) %>%
                                            1:length(unique(Estimator))))) %>%
   tbl_df()
 (
-  p2_marginal <- p2_marginal_pd %>%  group_by(X2, Estimator) %>%
+  p2_marginal <- p2_marginal_pd %>%  
+    group_by(X2, Estimator) %>%
     summarize(CATE = mean(CATE)) %>%
   ggplot(aes(x = X2, y = CATE, color = Estimator)) +
     geom_smooth(se = FALSE) +
@@ -83,8 +84,3 @@ ggsave(plot = p2_marginal,
        "../../ACIC-paper/figure/Figure3-SchoolLevelAchievment.pdf", 
        width = 8,
        height = 5)
-
-
-
-
-

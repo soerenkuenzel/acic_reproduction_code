@@ -2,9 +2,10 @@ library(sensitivitymv)
 library(CausalGAM)
 library(Matching)
 
-ATE_estimation <- function(Y, Z, feat, nboot = 500) {
+ATE_estimation <- function(Y, Z, feat, nboot = 500, non_smooth_vars = c("C2", "C3")) {
+  reg_vars <- c("C1", "C2", "C3","S3", "XC", "X1", "X2", "X3", "X4", "X5")
   match_X <- feat[, c("schoolid", "S3","C1", "C2", "C3")]
-  full_X <- feat[, c("C1", "C2", "C3","S3", "XC", "X1", "X2", "X3", "X4", "X5")]
+  full_X <- feat[, names(feat) %in% reg_vars]
   
   
   # Matching estimator
@@ -29,15 +30,22 @@ ATE_estimation <- function(Y, Z, feat, nboot = 500) {
   # See below for an alternative way of doing it -- SRK
   # I think it is OK -- SW
   ################################################################################
+  s_str <- function(var) {
+    paste0("s(", var, ")")
+  }
+  make_formula <- function(response, non_smooth_vars, reg_vars) {
+    smooth_vars <- setdiff(reg_vars, non_smooth_vars)
+    gam_terms <- paste(c(sapply(smooth_vars, s_str), non_smooth_vars), sep = " + ")
+    return(as.formula(paste0(response, " ~ ", gam_terms)))
+  }
   
   es <- estimate.ATE(
-    pscore.formula = 
-      Z ~ s(S3) + s(C1) + C2 + C3 + XC + s(X1) + s(X2) + s(X3) + s(X4) + s(X5),
+    pscore.formula = make_formula("Z", non_smooth_vars, reg_vars),
     pscore.family = binomial,
     outcome.formula.t = 
-      Y ~ s(S3) + s(C1) + C2 + C3 + XC + s(X1) + s(X2) + s(X3) + s(X4) + s(X5),
+      make_formula("Y", non_smooth_vars, reg_vars),
     outcome.formula.c = 
-      Y ~ s(S3) + s(C1)  + C2 + C3 +  XC + s(X1) + s(X2) + s(X3) + s(X4) + s(X5),
+      make_formula("Y", non_smooth_vars, reg_vars),
     outcome.family = gaussian,
     treatment.var = "Z",
     data = data.frame(full_X %>% mutate(C1 = as.numeric(C1), 

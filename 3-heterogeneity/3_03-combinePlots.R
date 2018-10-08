@@ -48,9 +48,11 @@ p1_cmb <- rbind(p1_marginal_pd %>% mutate(type = "Emperical"),
 )
   
 (
-p2_cmb <- rbind(p2_marginal_pd %>% mutate(type = "Emperical") %>% 
+p2_cmb <- rbind(p2_marginal_pd %>% 
                   group_by(X2, Estimator) %>%
-                  summarize(CATE = mean(CATE)), 
+                  summarize(CATE = mean(CATE)) %>% 
+                  mutate(type = "Emperical") %>%
+                  tbl_df(), 
       p2_pdp_pd %>% mutate(type = "Partial Dependence Plot"))  %>%
   ggplot() +
   geom_smooth(aes(
@@ -91,7 +93,7 @@ p1_hist <- p1_marginal_pd %>% filter(Estimator == "Estimator 1") %>%
   coord_cartesian(ylim = c(0, 1)) + 
   scale_y_continuous(breaks = c(0, 0.5, 1)) +
   ylab("Density") + 
-  theme(axis.title.y = element_text(margin = margin(t = 0, r = 0, b = 0, l = 0)))
+  theme(axis.title.y = element_text(margin = margin(t = 0, r = 1, b = 0, l = 0)))
 )
 (
 p2_hist <- p2_marginal_pd %>% filter(Estimator == "Estimator 1") %>%
@@ -112,5 +114,5 @@ grid.arrange(p1_cmb + theme(axis.title.x = element_blank()) ,
              p2_cmb + theme(axis.title.x = element_blank()), 
              p1_hist, 
              p2_hist,
-             ncol = 2, heights = c(2,1))
+             ncol = 2, heights = c(4,1))
 dev.off()

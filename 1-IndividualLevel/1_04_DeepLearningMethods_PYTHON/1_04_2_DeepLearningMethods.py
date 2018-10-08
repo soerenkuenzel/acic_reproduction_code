@@ -10,11 +10,10 @@ import matplotlib.pyplot
 def euclidean_loss(a, b):
     return tf.reduce_mean(tf.reduce_sum(tf.pow(a - b, 2))) / tf.cast(tf.shape(a)[0], 'float')
 
-def test_function():
-    print(4)
 
 def MSE(a, b):
     return np.mean((a - b) ** 2)
+
 
 def scaled_sigmoid(x):
             return 2*tf.sigmoid(x) - 1
@@ -29,6 +28,7 @@ class CATE_estimator:
 
 class LinearTlearner(CATE_estimator):
     tf_trainable = True
+
     def __init__(self, XS, YS, WS, catagorial=False):
         if (len(YS.shape) == 1):
             YS = np.expand_dims(YS, axis=1)
@@ -78,7 +78,6 @@ class LinearTlearner(CATE_estimator):
         sess = tf.get_default_session()
         t_hat = sess.run([self.tau_estimate], feed_dict=fd)[0]
         return np.squeeze(t_hat.flatten())
-
 
 
 class Tlearner(CATE_estimator):
@@ -693,6 +692,7 @@ class RLearner(CATE_estimator):
         t_hat = sess.run(self.tau_hat,
                          feed_dict=fd)
         return t_hat.flatten()
+
+
 if __name__ == '__main__':
     print(3 + 3)
-    test_function()
