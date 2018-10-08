@@ -1,4 +1,20 @@
-setwd("~/acic_reproduction_code/")
+if (file.exists("~/Dropbox/ACIC_workshop_paper/Code/analysis/")) {
+  setwd("~/Dropbox/ACIC_workshop_paper/Code/analysis/")
+} else if (file.exists("~/acic_reproduction_code/")) {
+  setwd("~/acic_reproduction_code/")
+} else if (file.exists("~/ACIC-code/")) {
+  setwd("~/ACIC-code/")
+} else {
+  stop("Cannot set working directory!")
+}
+
+if (FALSE) {
+devtools::with_libpaths(
+  new = "~/Rlibs",
+  devtools::install_github("soerenkuenzel/causalToolbox", 
+                           auth_token = "aa0ad95703c119244a0ff7d9661d3ec5592e3bb1"))
+}
+library(causalToolbox, lib.loc='~/Rlibs/')
 source("1-IndividualLevel/1_02-define_estimatorsCT.R")
 library(tidyverse)
 library(reshape)

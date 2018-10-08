@@ -1,6 +1,15 @@
 .Rproj.user/
 .Rproj.user
 Icon
+
+.DS_Store
+.idea/
+*.zip
+*.csv
+.DS_Store
+analysis.Rproj
+data/
+
 ~
 ~
 ~
