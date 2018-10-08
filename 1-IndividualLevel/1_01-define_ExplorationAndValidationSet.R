@@ -1,6 +1,19 @@
-setwd("~/acic_reproduction_code/")
+if (file.exists("~/Dropbox/ACIC_workshop_paper/Code/analysis/")) {
+  setwd("~/Dropbox/ACIC_workshop_paper/Code/analysis/")
+} else if (file.exists("~/acic_reproduction_code/")) {
+  setwd("~/acic_reproduction_code/")
+} else {
+  stop("Cannot set working directory!")
+}
 set.seed(734324633)
 ds <- read.csv("data/synthetic_data.csv") 
+
+schoolid_grid <- sort(unique(ds$schoolid))
+exploration_set_school_ids <- 
+  sample(x = schoolid_grid, size = round(length(schoolid_grid) / 2))
+
+eset_bl <- ds$schoolid %in% exploration_set_school_ids
+vset_bl <- !eset_bl
 
 eset_bl <- sample(c(TRUE, FALSE), size = nrow(ds), replace = TRUE)
 vset_bl <- !eset_bl

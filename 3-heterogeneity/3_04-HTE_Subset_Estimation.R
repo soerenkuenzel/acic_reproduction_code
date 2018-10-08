@@ -94,14 +94,28 @@ printCIs(X2groups_merged_res)
 printCIs(urbanicity4_res)
 printCIs(selfexp4_res)
 
-# Implementing test to see if there are differenes in response 
+# Implementing test to see if there are differences in response 
 # between subgroups.
 
-with(X1groups_res$results, 
+tapply(ds$Y, X1groups, mean)
+tapply(ds$Y, X1groups, sd)
+
+
+compute_p_value <- function(result_obj) {
+with(result_obj$results, 
      test_ATE_difference(small$AIPW[2],
                          small$AIPW[4],
                          large$AIPW[2],
                          large$AIPW[4])
+)
+  
+  X1groups_res
+  
+with(X1groups_res$results, 
+     test_ATE_difference(small$IPW[2],
+                         small$IPW[4],
+                         large$IPW[2],
+                         large$IPW[4])
 )
 
 with(urbanicity4_res$results, 
@@ -120,41 +134,15 @@ with(selfexp4_res$results,
                          selfexpOther$AIPW[4])
 )
 
-
-test_ATE_difference(res_split2_merged$results$inside$AIPW[2],
-                    res_split2_merged$results$inside$AIPW[4],
-                    res_split2_merged$results$outside$AIPW[2],
-                    res_split2_merged$results$outside$AIPW[4])
-
-
-test_ATE_difference(res_split2$results$small$AIPW[2],
-                    res_split2$results$small$AIPW[4],
-                    res_split2$results$medium$AIPW[2],
-                    res_split2$results$medium$AIPW[4])
-
-test_ATE_difference(res_split2$results$medium$AIPW[2],
-                    res_split2$results$medium$AIPW[4],
-                    res_split2$results$large$AIPW[2],
-                    res_split2$results$large$AIPW[4])
-
-test_ATE_difference(res_split2$results$small$AIPW[2],
-                    res_split2$results$small$AIPW[4],
-                    res_split2$results$large$AIPW[2],
-                    res_split2$results$large$AIPW[4])
-
-
-
-# permutation_test <- function(group_ids, statistic = "ipw", Y, Z, X) {
-#   stopifnot(statistic == "ipw")
-#   ATE_estimation(ds$Y, ds$Z, ds) {
-#     
-#   }
-#   
-# }
-
-# Neyman Rub
-
-
-
-
-
+with(X2groups_merged_res$results,
+     test_ATE_difference(inside$AIPW[2],
+                         inside$AIPW[4],
+                         outside$AIPW[2],
+                         outside$AIPW[4])
+)
+with(X2groups_res$results, 
+     test_ATE_difference(small$AIPW[2],
+                         small$AIPW[4],
+                         results$medium$AIPW[2],
+                         medium$AIPW[4])
+)
