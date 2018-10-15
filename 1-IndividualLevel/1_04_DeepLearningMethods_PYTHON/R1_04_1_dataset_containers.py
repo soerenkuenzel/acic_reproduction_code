@@ -1,3 +1,7 @@
+# This file is based on joint work with Bradly C Stadie, Nikita Vemuri, Varsha Ramakrishnan, Jasjeet S Sekhon, and
+# Pieter Abbeel. The original work was done for the pulication of
+# "Transfer Learning for Estimating Causal Effects using Neural Networks" by Künzel et al.
+
 import csv
 import numpy as np
 from pathlib import Path
@@ -10,7 +14,7 @@ from skimage.transform import rotate
 # ----------------------------------------------------------------------------------------------------------------------
 # Multiple outcome social pressure
 
-class MSPData:
+class full_data:
     def __init__(self):
         self.evds = Path('../exploration_validation_splitting.csv')
         self.dfile = Path('../../data/synthetic_data.csv')
@@ -70,7 +74,13 @@ class MSPData:
 
 
 
-    def get_data_for_experiment(self):
+    def get_train_data(self):
+        # y, w, feat
+        return [self.y[self.exploration_bl],
+                self.w[self.exploration_bl],
+                self.feat[self.exploration_bl]]
+
+    def get_test_data(self):
         # y, w, feat
         return [self.y[self.exploration_bl],
                 self.w[self.exploration_bl],
@@ -78,7 +88,10 @@ class MSPData:
 
 if __name__=='__main__':
     print(9)
-    m = MSPData()
-    y, w, feat = m.get_data_for_experiment()
-    print(w)
+    m = full_data()
+    y, w, feat = m.get_train_data()
+    print(y)
+
+    y, w, feat = m.get_test_data()
+    print(y)
 

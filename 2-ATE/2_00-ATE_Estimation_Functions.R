@@ -1,7 +1,6 @@
 library(sensitivitymv)
 library(CausalGAM)
 library(Matching)
-
 ATE_estimation <- function(Y, Z, feat, nboot = 500, non_smooth_vars = c("C2", "C3")) {
   reg_vars <- c("C1", "C2", "C3","S3", "XC", "X1", "X2", "X3", "X4", "X5")
   match_X <- feat[, c("schoolid", "S3","C1", "C2", "C3")]
@@ -9,7 +8,7 @@ ATE_estimation <- function(Y, Z, feat, nboot = 500, non_smooth_vars = c("C2", "C
   
   
   # Matching estimator
-  # Matching exactly on School ----------------------------------------------------
+  # We match exactly on school ----------------------------------------------------
   mm <- Match(Y = Y, 
               Tr = Z, 
               X = match_X, 
@@ -21,24 +20,19 @@ ATE_estimation <- function(Y, Z, feat, nboot = 500, non_smooth_vars = c("C2", "C
   fake_ite <- Y[mm$index.treated] - Y[mm$index.control]
   
   (ATE <- mean(fake_ite))
-  # CausalGAM estimators  ---------------------------------------------------------
   
-  # AIPW estimate ----------------------------------------------------------------
-  
-  ################################################################################
-  # Is that the right way of computing the AIPW, I cannot use C2 and C3 here ...
-  # See below for an alternative way of doing it -- SRK
-  # I think it is OK -- SW
-  ################################################################################
-  s_str <- function(var) {
+  # Wrapper functinos to construct formulas for the CausalGAM package -------------
+    s_str <- function(var) {
     paste0("s(", var, ")")
-  }
+    }
+  
   make_formula <- function(response, non_smooth_vars, reg_vars) {
     smooth_vars <- setdiff(reg_vars, non_smooth_vars)
-    gam_terms <- paste(c(sapply(smooth_vars, s_str), non_smooth_vars), sep = " + ")
+    gam_terms <- paste(c(sapply(smooth_vars, s_str), non_smooth_vars), collapse = " + ")
     return(as.formula(paste0(response, " ~ ", gam_terms)))
   }
   
+  # CausalGAM estimators  ---------------------------------------------------------
   es <- estimate.ATE(
     pscore.formula = make_formula("Z", non_smooth_vars, reg_vars),
     pscore.family = binomial,
@@ -48,8 +42,7 @@ ATE_estimation <- function(Y, Z, feat, nboot = 500, non_smooth_vars = c("C2", "C
       make_formula("Y", non_smooth_vars, reg_vars),
     outcome.family = gaussian,
     treatment.var = "Z",
-    data = data.frame(full_X %>% mutate(C1 = as.numeric(C1), 
-                                      CC = as.numeric(C2) * as.numeric(C3)), 
+    data = data.frame(full_X, 
                       Z, 
                       Y),
     divby0.action = "t",
@@ -108,5 +101,5 @@ matching_sensitivity <- function(Y,Z,feat) {
     sensitivitymv::senmv(matched_pairs, gamma = gamma, trim = 2.5, method = "t")$pval - 0.05,
     lower = 1, upper = 50
   )
-  return(out)
+  return(out$root)
 }

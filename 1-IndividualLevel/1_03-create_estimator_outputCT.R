@@ -14,7 +14,7 @@ devtools::with_libpaths(
   devtools::install_github("soerenkuenzel/causalToolbox", 
                            auth_token = "aa0ad95703c119244a0ff7d9661d3ec5592e3bb1"))
 }
-library(causalToolbox, lib.loc='~/Rlibs/')
+library(causalToolbox)#, lib.loc = '~/Rlibs/')
 source("1-IndividualLevel/1_02-define_estimatorsCT.R")
 library(tidyverse)
 library(reshape)
@@ -83,6 +83,13 @@ for (estimator_i in 1:length(estimator_grid)) {
     estimator <- estimator_grid[[estimator_i]]
     estimator_name <- names(estimator_grid)[estimator_i]
     CATEpredictor <- CATEpredictor_grid[[estimator_name]]
+    
+    filename <- paste0("1-IndividualLevel/estimates/", estimator_name, 
+                       feat_var_name, ".csv")
+    if (file.exists(filename)) {
+      print(paste("File", filename, "exists! Running next!"))
+      next()
+    }
     
     # Insample Predictions -----------------------------------------------------
     estimates_i <-

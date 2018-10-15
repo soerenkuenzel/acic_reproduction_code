@@ -1,3 +1,9 @@
+# This file is based on joint work with Bradly C Stadie, Nikita Vemuri, Varsha Ramakrishnan, Jasjeet S Sekhon, and
+# Pieter Abbeel. The original work was done for the pulication of
+# "Transfer Learning for Estimating Causal Effects using Neural Networks" by Künzel et al.
+
+
+
 # from data_generators import *
 import numpy as np
 import tensorflow as tf
@@ -185,7 +191,8 @@ class Slearner(CATE_estimator):
             self.Y_hat = tf.sigmoid(self.Y_hat)
 
         self.loss = euclidean_loss(self.Y_hat,
-                                   self.nn_input_Y)  # tf.reduce_mean(tf.reduce_sum(tf.pow(self.Y_hat - self.nn_input_Y, 2)))
+                                   self.nn_input_Y)
+        # tf.reduce_mean(tf.reduce_sum(tf.pow(self.Y_hat - self.nn_input_Y, 2)))
 
         self.trainer = tf.train.AdamOptimizer().minimize(self.loss)
 
