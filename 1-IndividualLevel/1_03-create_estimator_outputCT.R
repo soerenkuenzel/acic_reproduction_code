@@ -8,12 +8,9 @@ if (file.exists("~/Dropbox/ACIC_workshop_paper/Code/analysis/")) {
   stop("Cannot set working directory!")
 }
 
-if (FALSE) {
-devtools::with_libpaths(
-  new = "~/Rlibs",
-  devtools::install_github("soerenkuenzel/causalToolbox", 
-                           auth_token = "aa0ad95703c119244a0ff7d9661d3ec5592e3bb1"))
-}
+devtools::install_github("soerenkuenzel/causalToolbox", 
+                         ref = "141f54a746ad8c41eae31a59f1f369dd4a6968d0")
+
 library(causalToolbox)#, lib.loc = '~/Rlibs/')
 source("1-IndividualLevel/1_02-define_estimatorsCT.R")
 library(tidyverse)

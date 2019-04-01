@@ -8,6 +8,9 @@ if (file.exists("~/Dropbox/ACIC_workshop_paper/Code/analysis/")) {
   stop("Cannot set working directory!")
 }
 
+devtools::install_github("soerenkuenzel/causalToolbox", 
+                         ref = "141f54a746ad8c41eae31a59f1f369dd4a6968d0")
+
 library(causalToolbox)
 
 # ------------------------------------------------------------------------------
