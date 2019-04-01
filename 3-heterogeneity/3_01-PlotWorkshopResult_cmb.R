@@ -148,9 +148,9 @@ for (this_feat in c("X1", "X2")) { # this_feat <- "XC"
   grid.arrange(p1_marginalGP, p1_pdpGP, p1_countGP, ncol = 1, heights = c(3, 3, 1.4))
   dev.off()
   
-  # pdf(file = paste0("../../ACIC-paper/figure/", this_feat, "_cmb.pdf"),
-  #     width = 5, height = 5)
-  # grid.arrange(p1_marginalGP, p1_pdpGP, p1_countGP, ncol = 1, heights = c(3, 3, 1.4))
-  # dev.off()
+  pdf(file = paste0("../../ACIC-paper/figure/", this_feat, "_cmb.pdf"),
+      width = 5, height = 5)
+  grid.arrange(p1_marginalGP, p1_pdpGP, p1_countGP, ncol = 1, heights = c(3, 3, 1.4))
+  dev.off()
 }
 

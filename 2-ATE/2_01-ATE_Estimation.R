@@ -18,4 +18,4 @@ library(gam)
 
 pscore_model <- gam(Z ~ C1 + C2  + s(S3) + s(XC) + s(X1) + 
                                 s(X2) + s(X3) + s(X4) + s(X5), data = ds)
-pscore_hat <- predict(propensity_score_model)
+pscore_hat <- predict(pscore_model)
